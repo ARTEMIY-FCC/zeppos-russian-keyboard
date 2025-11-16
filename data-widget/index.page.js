@@ -41,14 +41,12 @@ DataWidget({
     recentInput: "",
     t9Widget: null,
   },
-
   getKeyboard() {
     if (typeof keyboard !== "undefined" && keyboard) {
       return keyboard;
     }
     return null;
   },
-
   safeSendFnKey(constOrName) {
     const k = this.getKeyboard();
     if (!k || typeof k.sendFnKey !== "function") {
@@ -62,7 +60,6 @@ DataWidget({
       console.log("Ошибка при отправке клавиши:", e);
     }
   },
-
   safeInputText(text) {
     const k = this.getKeyboard();
     if (k && typeof k.inputText === "function") {
@@ -76,7 +73,6 @@ DataWidget({
       this.setState({ inputText: this.state.inputText + text });
     }
   },
-
   safeInputBuffer(buffer, color1, color2) {
     const k = this.getKeyboard();
     if (k && typeof k.inputBuffer === "function") {
@@ -89,7 +85,6 @@ DataWidget({
       console.log("Клавиатура не поддерживает inputBuffer");
     }
   },
-
   safeClearInput() {
     const k = this.getKeyboard();
     if (k && typeof k.clearInput === "function") {
@@ -108,7 +103,6 @@ DataWidget({
       });
     }
   },
-
   safeGetTextContext() {
     const k = this.getKeyboard();
     if (k && typeof k.getTextContext === "function") {
@@ -121,7 +115,6 @@ DataWidget({
     }
     return null;
   },
-
   setState(state) {
     for (const key in state) {
       this.state[key] = state[key];
@@ -130,7 +123,6 @@ DataWidget({
       this.renderCandidates(this.state.vc1);
     }
   },
-
   onInit() {
     console.log("Инициализация виджета");
     try {
@@ -148,7 +140,6 @@ DataWidget({
       };
     }
   },
-
   renderCandidates(vc1) {
     if (!vc1) {
       console.log("Контейнер не определён, пропускаем отрисовку");
@@ -255,14 +246,12 @@ DataWidget({
       },
       deleteBtnContainer
     );
-
     try {
       updateLayout(vc1);
     } catch (e) {
       console.log("Ошибка при обновлении layout:", e);
     }
   },
-
   build() {
     try {
       const vc = createKeyboard();
@@ -281,7 +270,6 @@ DataWidget({
       console.log("Ошибка при сборке интерфейса:", e);
     }
   },
-
   getT9Predictions(input) {
     if (!input || input.length < 1) {
       return [];
@@ -308,7 +296,6 @@ DataWidget({
     }
     return exactMatches.length > 0 ? [exactMatches[0]] : [];
   },
-
   renderCurrentInputKeys(vc) {
     const inputMethodObj = this.state.inputMethod || {};
     const currentMethodName = typeof inputMethodObj.currentMethod === "string"
@@ -359,7 +346,6 @@ DataWidget({
       });
     });
   },
-
   renderActionKeys(vc) {
     const vc3 = createWidget2(
       widget.VIRTUAL_CONTAINER,
@@ -371,7 +357,6 @@ DataWidget({
       },
       vc
     );
-
     // Кнопка смены языка
     let vc4 = createWidget2(
       widget.VIRTUAL_CONTAINER,
@@ -422,7 +407,6 @@ DataWidget({
       },
       vc4
     );
-
     // Кнопка пробела
     const spaceBtnContainer = createWidget2(
       widget.VIRTUAL_CONTAINER,
@@ -467,18 +451,31 @@ DataWidget({
       },
       spaceBtnContainer
     );
-
-    // Кнопка Enter
-    createWidget2(
-      widget.BUTTON,
+    // Кнопка Enter (заменена на tick.png)
+    const enterBtnContainer = createWidget2(
+      widget.VIRTUAL_CONTAINER,
       {
-        ...styles.toggleLang,
-        text: "→",
         layout: {
           ...styles.toggleLang.layout,
+          display: "flex",
+          justify_content: "center",
+          align_items: "center",
+          align_content: "center",
           width: "18%",
           margin_left: "-25",
           margin_top: "-5",
+        },
+      },
+      vc3
+    );
+    const enterBtn = createWidget2(
+      widget.BUTTON,
+      {
+        layout: {
+          top: "0",
+          width: "100%",
+          height: "100%",
+          tags: "ignore-layout",
         },
         click_func: (e) => {
           if (this.safeGetTextContext()) {
@@ -488,10 +485,24 @@ DataWidget({
           }
         },
       },
-      vc3
+      enterBtnContainer
+    );
+    if (enterBtn && enterBtn.setAlpha) {
+      enterBtn.setAlpha(0);
+    }
+    createWidget2(
+      widget.IMG,
+      {
+        src: "image/tick.png",
+        enable: false,
+        layout: {
+          width: "64",
+          height: "64",
+        },
+      },
+      enterBtnContainer
     );
   },
-
   handleKeyPress(key) {
     const inputMethodObj = this.state.inputMethod || {};
     const currentMethodName = typeof inputMethodObj.currentMethod === "string" ? inputMethodObj.currentMethod : "pinyin";
@@ -524,7 +535,6 @@ DataWidget({
       });
     }
   },
-
   selectCandidate(word) {
     const currentMethod = (this.state.inputMethod && typeof this.state.inputMethod.getCurrentMethod === "function")
       ? this.state.inputMethod.getCurrentMethod()
@@ -540,7 +550,6 @@ DataWidget({
     });
     this.commitText(inputText);
   },
-
   selectT9Candidate(word) {
     for (let i = 0; i < this.state.recentInput.length; i++) {
       this.safeSendFnKey('BACKSPACE');
@@ -551,7 +560,6 @@ DataWidget({
       t9Candidates: [],
     });
   },
-
   toggleLanguage() {
     this.toggle();
     this.setState({
@@ -559,15 +567,12 @@ DataWidget({
       candidates: [],
     });
   },
-
   toggleSelect() {
     this.safeSendFnKey('SELECT');
   },
-
   toggle() {
     this.safeSendFnKey('SWITCH');
   },
-
   delete() {
     this.safeSendFnKey('BACKSPACE');
     if (this.state.recentInput.length > 0) {
@@ -583,11 +588,9 @@ DataWidget({
       });
     }
   },
-
   cancel() {
     this.safeSendFnKey('CANCEL');
   },
-
   deleteAll() {
     this.setState({
       inputBuffer: "",
@@ -597,15 +600,12 @@ DataWidget({
     });
     this.safeClearInput();
   },
-
   enter() {
     this.safeSendFnKey('ENTER');
   },
-
   commitText(text) {
     this.safeInputText(text);
   },
-
   commitTextBuffer() {
     try {
       this.safeInputBuffer(this.state.inputBuffer, 0x757575, 0x757575);
@@ -613,7 +613,6 @@ DataWidget({
       console.log("Ошибка при фиксации буфера:", e);
     }
   },
-
   onDestroy() {
     console.log("⚡ Виджет - В С Е");
   },
