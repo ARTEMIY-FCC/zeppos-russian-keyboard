@@ -1,6 +1,7 @@
-# zeppos-russian-keyboard
+![icon](https://github.com/ARTEMIY-FCC/zeppos-russian-keyboard/blob/main/assets/default.r/icon.png?raw=true)
 # Русская клавиатура для Zepp OS (API 4.2)
-
+![screens](https://github.com/ARTEMIY-FCC/zeppos-russian-keyboard/blob/main/screenshots/s.png?raw=true)
+![screenr](https://github.com/ARTEMIY-FCC/zeppos-russian-keyboard/blob/main/screenshots/r.png?raw=true)
 **Кратко:** кастомная русская клавиатура для часов на платформе **Zepp OS**. Работает с **API 4.2** и интегрируется в системные поля ввода (ответы на сообщения и т.п.). В проект добавлены скриншоты интерфейса и иконка приложения.
 
 # Особенности
